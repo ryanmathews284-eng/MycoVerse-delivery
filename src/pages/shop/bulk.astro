@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Bulk Orders & Wholesale Stacks | MycoVerse Delivery LA"
+  description="Order premium functional mycology, microdose capsules, and botanical products in bulk. Direct priority fulfillment and wholesale pricing from Los Angeles, CA."
+>
+  <div class="bg-[#1A120B] text-[#FDFBF7] py-16 px-4 sm:px-6 lg:px-8 border-b border-[#3E2723]">
+    <div class="max-w-7xl mx-auto">
+      <nav class="text-xs text-[#D4A373] mb-4 tracking-wider uppercase font-semibold">
+        <a href="/" class="hover:underline">Home</a> &gt; <a href="/shop" class="hover:underline">Shop</a> &gt; <span class="text-stone-300">Bulk & Wholesale</span>
+      </nav>
+      <h1 class="text-4xl sm:text-5xl font-black tracking-tight mb-4">
+        Wholesale & Bulk <span class="text-[#D4A373]">Orders.</span>
+      </h1>
+      <p class="max-w-2xl text-stone-300 text-sm sm:text-base leading-relaxed">
+        Scale your retail inventory or secure large-volume microdose capsules, artisan chocolates, and botanical blends directly from our Los Angeles distribution hub. Competitive tier pricing and priority dispatch.
+      </p>
+    </div>
+  </div>
+
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      
+      {/* Wholesale Tiers Overview */}
+      <div class="lg:col-span-2 space-y-6">
+        <div class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-2xl p-6 sm:p-8 shadow-sm">
+          <h2 class="text-2xl font-bold text-[#1A120B] mb-2">Bulk Partnership Tiers</h2>
+          <p class="text-xs sm:text-sm text-[#3E2723]/80 leading-relaxed mb-6">
+            We provide custom packaging, white-label options for qualified partners, and absolute batch consistency tested in our Los Angeles facility.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1 bg-[#F4EFE6] border border-[#3E2723]/10 p-5 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-[#C68B59] uppercase tracking-widest">Tier 1</span>
+                <h3 class="text-lg font-bold text-[#1A120B] mt-1 mb-2">Micro-Wholesale</h3>
+                <p class="text-xs text-[#3E2723]/70 mb-4">Ideal for boutique wellness operators and small curators.</p>
+              </div>
+              <ul class="text-xs text-[#3E2723] space-y-2 pt-2 border-t border-[#3E2723]/10">
+                <li>✓ Minimum Order: $1,500</li>
+                <li>✓ 15% Off Catalog Pricing</li>
+                <li>✓ Standard Priority Dispatch</li>
+              </ul>
+            </div>
+
+            <div class="flex-1 bg-[#1A120B] text-[#FDFBF7] border border-[#3E2723] p-5 rounded-xl flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-bold text-[#D4A373] uppercase tracking-widest">Tier 2</span>
+                <h3 class="text-lg font-bold text-white mt-1 mb-2">Enterprise Scale</h3>
+                <p class="text-xs text-stone-300 mb-4">Designed for major distributors and multi-location retail.</p>
+              </div>
+              <ul class="text-xs text-stone-200 space-y-2 pt-2 border-t border-[#3E2723]/20">
+                <li>✓ Minimum Order: $5,000+</li>
+                <li>✓ 25%+ Volume Discount</li>
+                <li>✓ Dedicated Account Manager & Custom White-Label</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-2xl p-6 sm:p-8 shadow-sm">
+          <h2 class="text-xl font-bold text-[#1A120B] mb-3">Fulfillment & Compliance Guarantee</h2>
+          <p class="text-xs sm:text-sm text-[#3E2723]/80 leading-relaxed">
+            All bulk consignments are vacuum-sealed, tamper-evident, and dispatched with full laboratory certificate of analysis (COA) documentation to ensure smooth transit across North America.
+          </p>
+        </div>
+      </div>
+
+      {/* Bulk Inquiry Form */}
+      <div class="bg-[#1A120B] text-[#FDFBF7] p-6 sm:p-8 rounded-2xl shadow-xl flex flex-col justify-between">
+        <div>
+          <h2 class="text-xl font-bold mb-2">Request Wholesale Quote</h2>
+          <p class="text-xs text-stone-300 mb-6">Fill out your requirements below and our enterprise desk will respond within 2 hours.</p>
+
+          <form class="space-y-4" action="#" method="POST">
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#D4A373] mb-1">Company / Representative Name</label>
+              <input type="text" required class="w-full bg-[#3E2723]/40 border border-[#D4A373]/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#D4A373]" placeholder="e.g., Nexus Wellness LLC" />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#D4A373] mb-1">Secure Email Address</label>
+              <input type="email" required class="w-full bg-[#3E2723]/40 border border-[#D4A373]/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#D4A373]" placeholder="buyer@company.com" />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#D4A373] mb-1">Product Categories of Interest</label>
+              <select class="w-full bg-[#3E2723]/40 border border-[#D4A373]/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#D4A373]">
+                <option value="all">Full Catalog Mix</option>
+                <option value="capsules">Microdose Capsules & Stacks</option>
+                <option value="chocolates">Artisan Chocolates</option>
+                <option value="gummies">Gummies & Extracts</option>
+                <option value="strains">Dried Botanical Strains</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-[#D4A373] mb-1">Estimated Budget / Volume</label>
+              <input type="text" class="w-full bg-[#3E2723]/40 border border-[#D4A373]/20 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#D4A373]" placeholder="e.g., $3,000 initial batch" />
+            </div>
+
+            <button type="submit" class="w-full bg-[#D4A373] text-[#1A120B] text-xs font-black py-3.5 rounded-xl hover:bg-white transition-all shadow-md uppercase tracking-wider mt-2 cursor-pointer">
+              Submit Wholesale Inquiry
+            </button>
+          </form>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-[#3E2723] text-center text-[10px] text-stone-400">
+          🔒 Secure Encrypted B2B Channel • Los Angeles, CA
+        </div>
+      </div>
+
+    </div>
+  </section>
+</Layout>

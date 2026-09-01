@@ -1,0 +1,70 @@
+---
+// src/components/Hero.astro
+import { Image } from 'astro:assets';
+import heroImage from '../assets/hero-psychedelics.webp';
+
+interface Props {
+  hqLocation: string;
+}
+
+const { hqLocation } = Astro.props;
+---
+<section 
+  class="relative w-full min-h-[680px] sm:min-h-[740px] flex items-start justify-start text-left px-6 sm:px-12 lg:px-16 pt-16 sm:pt-20 pb-20 overflow-hidden rounded-3xl my-6 max-w-7xl mx-auto shadow-2xl"
+  aria-label="MycoVerse Psilocybin Delivery and Mycology Innovation Hub"
+>
+  {/* Optimized Background Hero Image via Astro Assets with Responsive Widths */}
+  <div class="absolute inset-0 z-0 overflow-hidden">
+    <Image 
+      src={heroImage} 
+      alt="State-of-the-art MycoVerse psilocybin and active mycology production facility showing cleanroom containers, processing equipment, and a certified operator managing craft psilocybin cubensis strains." 
+      class="w-full h-full object-cover object-center scale-95 sm:scale-105 transition-transform duration-1000"
+      widths={[640, 768, 1024, 1280, 1536, heroImage.width]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+    {/* Directional Vignette Overlay for top-left text pop */}
+    <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/40 to-black/60 backdrop-brightness-90"></div>
+  </div>
+
+  {/* Structured Upper-Left Aligned Content */}
+  <div class="relative z-10 max-w-2xl text-left flex flex-col items-start justify-start">
+    
+    {/* SEO Badge */}
+    <div class="inline-flex items-center gap-2 bg-[#D4A373] text-[#1A120B] font-extrabold text-[11px] sm:text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider mb-5 shadow-2xl">
+      <span>Headquartered in {hqLocation}</span>
+      <span class="w-1 h-1 rounded-full bg-[#1A120B]"></span>
+      <span>Verified Strains & Secure Dispatch</span>
+    </div>
+    
+    {/* Primary H1 Keyword-Rich Heading */}
+    <h1 class="text-3xl sm:text-5xl font-black tracking-tight mb-4 leading-[1.15] text-white drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
+      Psilocybin Microdosing & Secure Delivery Platform
+    </h1>
+    
+    {/* Semantic Sub-headline */}
+    <p class="text-sm sm:text-base text-gray-200 mb-6 leading-relaxed font-medium drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] max-w-xl">
+      Welcome to your premier online source for laboratory-tested <strong class="text-white font-semibold">psilocybin cubensis strains</strong>, craft microdose capsules, artisan mushroom-infused chocolates, and discrete, end-to-end tracked shipping across North America.
+    </p>
+
+    {/* Action Buttons */}
+    <div class="flex flex-wrap items-center gap-4">
+      <a 
+        href="/shop" 
+        class="bg-[#D4A373] text-[#1A120B] font-extrabold px-7 py-3.5 rounded-xl hover:bg-[#e9b583] transition-all transform hover:-translate-y-0.5 shadow-2xl text-sm sm:text-base"
+        aria-label="Explore the full MycoVerse catalog of psilocybin and functional mushroom products"
+      >
+        Explore Full Catalog
+      </a>
+      <a 
+        href="/faq" 
+        class="bg-black/60 hover:bg-black/80 text-white border border-white/40 font-bold px-7 py-3.5 rounded-xl backdrop-blur-md transition-all transform hover:-translate-y-0.5 shadow-2xl text-sm sm:text-base"
+        aria-label="Read our shipping, security, and delivery FAQ guidelines"
+      >
+        Shipping & Delivery FAQ
+      </a>
+    </div>
+
+  </div>
+</section>

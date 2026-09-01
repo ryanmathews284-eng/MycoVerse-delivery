@@ -1,0 +1,409 @@
+---
+// src/layouts/Layout.astro
+import '../styles/global.css';
+import AgeVerificationModal from '../components/AgeVerificationModal.astro';
+import CartDrawer from '../components/CartDrawer.astro';
+import { PRODUCTS } from '../data/products';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { 
+  title = "MycoVerse Delivery | Premium Functional & Artisan Mycology (US & Canada)", 
+  description = "Dispatched from Los Angeles, CA. Nationwide US & Canadian cross-border delivery of functional mushrooms, artisan microdose capsules, and botanical wellness.",
+  ogImage = "/images/og-default.jpg"
+} = Astro.props;
+
+// Pass minimal product data to client script for instant search
+const searchProducts = PRODUCTS.map(p => ({
+  id: p.id,
+  name: p.name,
+  slug: p.slug,
+  category: p.category,
+  categoryTitle: p.categoryTitle,
+  description: p.description,
+  badge: p.badge,
+  price: p.variants[0]?.price || 0
+}));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(ogImage, Astro.url)} />
+  </head>
+  <body class="bg-[#FDFBF7] text-[#271C19] min-h-screen flex flex-col selection:bg-[#D4A373] selection:text-[#1A120B]">
+    
+    <AgeVerificationModal />
+    <CartDrawer />
+
+    {/* Top Announcement Bar */}
+    <div class="bg-[#C68B59] text-[#1A120B] text-xs font-bold tracking-wide py-1.5 px-4 text-center">
+      <span>🎉 Free Express Shipping on All Orders of $250 and Above (US & Canada)</span>
+    </div>
+
+    <div class="bg-[#1A120B] text-[#D4A373] text-xs tracking-wider py-2 px-4 text-center font-medium border-b border-[#3E2723]">
+      <span>Bespoke Mycology & Botanical Dispatch — Dispatched from <strong>Los Angeles, CA</strong></span>
+    </div>
+
+    {/* Header Navigation */}
+    <header class="sticky top-0 z-50 bg-[#FDFBF7]/95 backdrop-blur-md border-b border-[#3E2723]/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+        
+        {/* Left: Mobile Hamburger & Brand Logo */}
+        <div class="flex items-center gap-3 flex-shrink-0">
+          <button 
+            id="mobile-menu-trigger" 
+            aria-label="Toggle Mobile Menu"
+            class="md:hidden p-2 text-[#1A120B] hover:text-[#C68B59] focus:outline-none cursor-pointer flex-shrink-0"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          <a href="/" class="flex items-center gap-2.5 group">
+            <div class="relative bg-white border-2 border-[#1A120B] p-1 rounded-xl shadow-[2px_2px_0px_#1A120B] group-hover:translate-x-[-1px] group-hover:translate-y-[-1px] group-hover:shadow-[3px_3px_0px_#1A120B] transition-all flex items-center justify-center">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 13H15V20C15 20.5523 14.5523 21 14 21H10C9.44772 21 9 20.5523 9 20V13Z" fill="#FDF0D5" stroke="#1A120B" stroke-width="1.5"/>
+                <path d="M3 11C3 6.02944 7.02944 2 12 2C16.9706 2 21 6.02944 21 11C21 12 20.5 13 19 13H5C3.5 13 3 12 3 11Z" fill="#E63946" stroke="#1A120B" stroke-width="1.5"/>
+                <circle cx="8" cy="7" r="1.5" fill="#FDFBF7"/>
+                <circle cx="15.5" cy="7.5" r="1.2" fill="#FDFBF7"/>
+                <circle cx="12" cy="10" r="1.2" fill="#FDFBF7"/>
+              </svg>
+            </div>
+            <span class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A120B]">
+              MycoVerse<span class="text-[#D4A373]">.</span>
+            </span>
+          </a>
+        </div>
+
+        {/* Center: Desktop Navigation Links */}
+        <nav class="hidden xl:flex items-center gap-5 text-sm font-medium text-[#3E2723]">
+          <div class="relative group py-2">
+            <a href="/shop" class="flex items-center gap-1 hover:text-[#C68B59] transition-colors">
+              <span>Shop All</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </a>
+            
+            <div class="absolute top-full left-0 w-56 bg-[#FDFBF7] border border-[#3E2723]/15 rounded-2xl shadow-xl py-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 z-50">
+              <a href="/shop" class="block px-4 py-2 text-xs font-bold text-[#1A120B] hover:bg-[#3E2723]/5 hover:text-[#C68B59]">✨ Full Catalog Collection</a>
+              <div class="my-1 border-t border-[#3E2723]/10"></div>
+              <a href="/shop/chocolates" class="block px-4 py-2 text-xs text-[#3E2723] hover:bg-[#3E2723]/5 hover:text-[#C68B59]">🍫 Artisan Chocolates</a>
+              <a href="/shop/microdose" class="block px-4 py-2 text-xs text-[#3E2723] hover:bg-[#3E2723]/5 hover:text-[#C68B59]">💊 Microdose Capsules</a>
+              <a href="/shop/strains" class="block px-4 py-2 text-xs text-[#3E2723] hover:bg-[#3E2723]/5 hover:text-[#C68B59]">🍄 Premium Strains</a>
+              <a href="/shop/gummies" class="block px-4 py-2 text-xs text-[#3E2723] hover:bg-[#3E2723]/5 hover:text-[#C68B59]">🍬 Botanical Gummies</a>
+              <a href="/shop/bulk" class="block px-4 py-2 text-xs text-[#3E2723] hover:bg-[#3E2723]/5 hover:text-[#C68B59]">📦 Bulk Orders & Wholesale</a>
+            </div>
+          </div>
+
+          <a href="/blog" class="hover:text-[#C68B59] transition-colors">Blog</a>
+          <a href="/faq" class="hover:text-[#C68B59] transition-colors">FAQ</a>
+          <a href="/shipping-policy" class="hover:text-[#C68B59] transition-colors">Shipping</a>
+          <a href="/privacy-policy" class="hover:text-[#C68B59] transition-colors">Privacy</a>
+          <a href="/contact" class="hover:text-[#C68B59] transition-colors">Contact</a>
+        </nav>
+
+        {/* Right: Search & Cart Actions */}
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          {/* Mobile Search Toggle Button */}
+          <button 
+            id="mobile-search-toggle" 
+            aria-label="Open Search"
+            class="sm:hidden p-2.5 rounded-full bg-stone-100 text-[#1A120B] hover:bg-stone-200 transition-all flex items-center justify-center cursor-pointer shadow-sm flex-shrink-0"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+
+          {/* Desktop Search Bar */}
+          <div class="hidden sm:block relative w-64 lg:w-72">
+            <div class="flex items-center bg-stone-100 border border-stone-200 rounded-xl px-3 py-2 focus-within:border-[#C68B59] focus-within:bg-white transition-all">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-stone-400 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input 
+                type="text" 
+                id="header-search-input" 
+                placeholder="Search products..." 
+                class="bg-transparent text-base sm:text-xs text-[#1A120B] placeholder-stone-400 focus:outline-none w-full"
+                autocomplete="off"
+              />
+            </div>
+
+            {/* Live Dropdown Results Container */}
+            <div id="header-search-results" class="absolute top-full right-0 mt-2 w-72 sm:w-96 bg-[#FDFBF7] border border-[#3E2723]/20 rounded-2xl shadow-2xl p-2 hidden z-50 max-h-[75vh] overflow-y-auto">
+              {/* Dynamic results populate here */}
+            </div>
+          </div>
+
+          {/* Cart Button */}
+          <button 
+            id="cart-trigger" 
+            aria-label="Open Cart"
+            class="relative p-2.5 rounded-full bg-[#1A120B] text-[#FDFBF7] hover:bg-[#3E2723] transition-all flex items-center justify-center cursor-pointer shadow-sm flex-shrink-0"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span id="cart-badge" class="cart-counter-badge absolute -top-1 -right-1 bg-[#D4A373] text-[#1A120B] font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#FDFBF7]">0</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Expandable Search Bar Overlay */}
+      <div id="mobile-search-overlay" class="absolute top-full left-0 right-0 bg-[#FDFBF7] border-b border-[#3E2723]/20 p-4 shadow-xl hidden sm:hidden z-40">
+        <div class="relative w-full">
+          <div class="flex items-center bg-stone-100 border border-stone-200 rounded-xl px-3 py-2.5 focus-within:border-[#C68B59] focus-within:bg-white transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-stone-400 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input 
+              type="text" 
+              id="mobile-search-input" 
+              placeholder="Search products..." 
+              class="bg-transparent text-base sm:text-xs text-[#1A120B] placeholder-stone-400 focus:outline-none w-full"
+              autocomplete="off"
+            />
+            <button id="mobile-search-close" class="text-stone-400 hover:text-[#1A120B] p-1 ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Mobile Live Results Container */}
+          <div id="mobile-search-results" class="mt-2 w-full bg-[#FDFBF7] border border-[#3E2723]/20 rounded-2xl shadow-2xl p-2 hidden max-h-[60vh] overflow-y-auto">
+            {/* Dynamic results populate here */}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {/* Mobile Navigation Drawer */}
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden md:hidden transition-opacity">
+      <div class="absolute top-0 left-0 bottom-0 w-4/5 max-w-sm bg-[#FDFBF7] p-6 shadow-2xl flex flex-col justify-between overflow-y-auto">
+        <div>
+          <div class="flex items-center justify-between mb-8 pb-4 border-b border-[#3E2723]/10">
+            <span class="text-xl font-bold text-[#1A120B]">MycoVerse<span class="text-[#D4A373]">.</span></span>
+            <button id="mobile-menu-close" class="p-2 text-stone-500 hover:text-[#1A120B]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <nav class="space-y-4 font-semibold text-sm text-[#3E2723]">
+            <a href="/shop" class="block py-2 hover:text-[#C68B59]">✨ Full Catalog</a>
+            <a href="/shop/chocolates" class="block py-2 pl-4 text-xs text-stone-600 hover:text-[#C68B59]">🍫 Artisan Chocolates</a>
+            <a href="/shop/microdose" class="block py-2 pl-4 text-xs text-stone-600 hover:text-[#C68B59]">💊 Microdose Capsules</a>
+            <a href="/shop/strains" class="block py-2 pl-4 text-xs text-stone-600 hover:text-[#C68B59]">🍄 Premium Strains</a>
+            <a href="/shop/gummies" class="block py-2 pl-4 text-xs text-stone-600 hover:text-[#C68B59]">🍬 Botanical Gummies</a>
+            <a href="/shop/bulk" class="block py-2 pl-4 text-xs text-stone-600 hover:text-[#C68B59]">📦 Bulk Orders</a>
+            <div class="border-t border-[#3E2723]/10 pt-4 my-2"></div>
+            <a href="/blog" class="block py-2 hover:text-[#C68B59]">Blog & Guides</a>
+            <a href="/faq" class="block py-2 hover:text-[#C68B59]">FAQ</a>
+            <a href="/shipping-policy" class="block py-2 hover:text-[#C68B59]">Shipping Policy</a>
+            <a href="/privacy-policy" class="block py-2 hover:text-[#C68B59]">Privacy Policy</a>
+            <a href="/contact" class="block py-2 hover:text-[#C68B59]">Contact Us</a>
+          </nav>
+        </div>
+        <div class="text-[10px] text-stone-500 pt-6 border-t border-stone-200">
+          Dispatched from Los Angeles, CA. 18+ Only.
+        </div>
+      </div>
+    </div>
+
+    {/* Main Content */}
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    {/* Rich Professional Footer */}
+    <footer class="bg-[#1A120B] text-[#FDFBF7] pt-16 pb-12 border-t border-[#3E2723] mt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+        <div>
+          <h3 class="text-lg font-bold mb-4 text-[#D4A373]">MycoVerse<span class="text-white">.</span></h3>
+          <p class="text-xs text-stone-400 leading-relaxed mb-4">
+            Bespoke functional mycology, artisan chocolates, and precision botanical wellness. Vacuum-sealed and dispatched with priority shipping directly from Los Angeles, CA.
+          </p>
+          <div class="text-xs text-[#D4A373] font-semibold">
+            🔒 Secure US & Canadian Cross-Border Dispatch
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-[#D4A373] mb-4">Explore Collections</h4>
+          <ul class="space-y-2 text-xs text-stone-300">
+            <li><a href="/shop/chocolates" class="hover:text-[#D4A373] transition-colors">Artisan Chocolates</a></li>
+            <li><a href="/shop/microdose" class="hover:text-[#D4A373] transition-colors">Microdose Stacks</a></li>
+            <li><a href="/shop/strains" class="hover:text-[#D4A373] transition-colors">Dried Strains & Fungi</a></li>
+            <li><a href="/shop/gummies" class="hover:text-[#D4A373] transition-colors">Botanical Gummies</a></li>
+            <li><a href="/shop/bulk" class="hover:text-[#D4A373] transition-colors">Bulk & Wholesale Orders</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-[#D4A373] mb-4">Customer Support</h4>
+          <ul class="space-y-2 text-xs text-stone-300">
+            <li><a href="/faq" class="hover:text-[#D4A373] transition-colors">Frequently Asked Questions</a></li>
+            <li><a href="/shipping-policy" class="hover:text-[#D4A373] transition-colors">Shipping & Tracking Info</a></li>
+            <li><a href="/privacy-policy" class="hover:text-[#D4A373] transition-colors">Privacy & Data Security</a></li>
+            <li><a href="/contact" class="hover:text-[#D4A373] transition-colors">Contact Support Desk</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-[#D4A373] mb-4">Dispatch Terminal</h4>
+          <p class="text-xs text-stone-400 leading-relaxed mb-3">
+            Los Angeles Distribution Hub<br />
+            California, United States
+          </p>
+          <p class="text-[11px] text-stone-500">
+            Operating Hours: Mon - Sat (8:00 AM - 6:00 PST)
+          </p>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-[#3E2723]/60 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
+        <p>&copy; {new Date().getFullYear()} MycoVerse Delivery Inc. All rights reserved.</p>
+        <p class="text-[10px]">Dispatched securely from Los Angeles, CA. For adult use only (18+).</p>
+      </div>
+    </footer>
+
+    {/* Header Search & Mobile Menu Script */}
+    <script define:vars={{ searchProducts }}>
+      // Mobile Menu functionality
+      const mobileTrigger = document.getElementById('mobile-menu-trigger');
+      const mobileClose = document.getElementById('mobile-menu-close');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      mobileTrigger?.addEventListener('click', () => {
+        mobileMenu?.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+
+      mobileClose?.addEventListener('click', () => {
+        mobileMenu?.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+
+      mobileMenu?.addEventListener('click', (e) => {
+        if (e.target === mobileMenu) {
+          mobileMenu.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+
+      // Mobile Search Toggle Functionality
+      const mobileSearchToggle = document.getElementById('mobile-search-toggle');
+      const mobileSearchOverlay = document.getElementById('mobile-search-overlay');
+      const mobileSearchClose = document.getElementById('mobile-search-close');
+      const mobileSearchInput = document.getElementById('mobile-search-input');
+
+      mobileSearchToggle?.addEventListener('click', () => {
+        mobileSearchOverlay?.classList.remove('hidden');
+        mobileSearchInput?.focus();
+      });
+
+      mobileSearchClose?.addEventListener('click', () => {
+        mobileSearchOverlay?.classList.add('hidden');
+      });
+
+      // Universal Search Engine Functionality
+      function setupSearch(inputId, resultsId) {
+        const searchInput = document.getElementById(inputId);
+        const searchResults = document.getElementById(resultsId);
+
+        if (!searchInput || !searchResults) return;
+
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+
+          if (!query) {
+            searchResults.classList.add('hidden');
+            searchResults.innerHTML = '';
+            return;
+          }
+
+          const filtered = searchProducts.filter(item => 
+            item.name.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query) ||
+            item.categoryTitle.toLowerCase().includes(query) ||
+            item.badge.toLowerCase().includes(query)
+          );
+
+          searchResults.classList.remove('hidden');
+
+          if (filtered.length === 0) {
+            searchResults.innerHTML = `
+              <div class="text-center py-6 text-stone-500 text-xs px-4">
+                No products found matching "<strong>${e.target.value}</strong>".
+              </div>
+            `;
+            return;
+          }
+
+          searchResults.innerHTML = `
+            <div class="px-3 py-2 text-[10px] font-bold text-stone-400 uppercase tracking-wider border-b border-stone-200">
+              Matching Products (${filtered.length})
+            </div>
+            <div class="py-1">
+              ${filtered.map(item => `
+                <a href="/shop/${item.slug}" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-stone-100 transition-colors group">
+                  <div>
+                    <div class="flex items-center gap-1.5 mb-0.5">
+                      <span class="text-[9px] font-bold uppercase tracking-wider bg-[#D4A373]/20 text-[#C68B59] px-2 py-0.5 rounded-full">
+                        ${item.categoryTitle}
+                      </span>
+                    </div>
+                    <h4 class="text-xs font-bold text-[#1A120B] group-hover:text-[#C68B59] transition-colors">
+                      ${item.name}
+                    </h4>
+                  </div>
+                  <div class="text-right pl-3 flex-shrink-0">
+                    <span class="text-xs font-bold text-[#1A120B]">$${item.price.toFixed(2)}</span>
+                  </div>
+                </a>
+              `).join('')}
+            </div>
+          `;
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.classList.add('hidden');
+          }
+        });
+
+        searchInput.addEventListener('focus', () => {
+          if (searchInput.value.trim().length > 0) {
+            searchResults.classList.remove('hidden');
+          }
+        });
+      }
+
+      setupSearch('header-search-input', 'header-search-results');
+      setupSearch('mobile-search-input', 'mobile-search-results');
+    </script>
+  </body>
+</html>

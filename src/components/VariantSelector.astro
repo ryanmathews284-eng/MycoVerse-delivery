@@ -1,0 +1,51 @@
+---
+import type { ProductVariant } from '../data/products';
+
+interface Props {
+  productId: string;
+  variants: ProductVariant[];
+}
+
+const { productId, variants } = Astro.props;
+---
+
+<div class="variant-container" data-product-id={productId}>
+  <label for={`select-${productId}`} class="block text-xs font-medium text-[#D4A373] uppercase tracking-wider mb-1">
+    Select Option / Weight
+  </label>
+  <div class="relative">
+    <select 
+      id={`select-${productId}`}
+      class="variant-select w-full bg-[#1A120B] text-[#FDFBF7] border border-[#D4A373]/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#D4A373] transition-colors cursor-pointer"
+    >
+      {variants.map((variant, index) => (
+        <option value={variant.price} selected={index === 0}>
+          {variant.name} — ${variant.price.toFixed(2)} USD
+        </option>
+      ))}
+    </select>
+  </div>
+</div>
+
+<script>
+  // Client-side script to handle dynamic price updates when a user changes the dropdown
+  document.querySelectorAll('.variant-select').forEach((selectElement) => {
+    selectElement.addEventListener('change', (e) => {
+      const select = e.target as HTMLSelectElement;
+      const container = select.closest('.variant-container');
+      if (!container) return;
+      
+      const productId = container.getAttribute('data-product-id');
+      const selectedCard = document.querySelector(`[data-product-card="${productId}"]`);
+      if (!selectedCard) return;
+
+      const priceElement = selectedCard.querySelector('.product-price');
+      if (priceElement) {
+        const selectedOption = select.options[select.selectedIndex];
+        // Extract price value or format it
+        const priceValue = select.value;
+        priceElement.textContent = `$${Number(priceValue).toFixed(2)} USD`;
+      }
+    });
+  });
+</script>

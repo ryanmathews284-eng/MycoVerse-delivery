@@ -1,0 +1,52 @@
+---
+// AgeVerificationModal.astro
+---
+<div id="age-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center px-4 transition-opacity duration-300 hidden">
+  <div class="bg-[#FDFBF7] border border-[#3E2723]/20 rounded-3xl max-w-md w-full p-8 shadow-2xl text-center">
+    <div class="w-12 h-12 bg-[#1A120B] text-[#D4A373] rounded-2xl mx-auto flex items-center justify-center mb-4 text-xl font-bold">
+      18+
+    </div>
+    <h2 class="text-2xl font-black text-[#1A120B] mb-2">Age Verification Required</h2>
+    <p class="text-xs text-[#3E2723]/80 leading-relaxed mb-6">
+      You must be at least 18 years of age (or legal age in your jurisdiction) to enter MycoVerse Delivery and purchase our botanical and mycology collections.
+    </p>
+    <div class="space-y-3">
+      <button 
+        id="age-verify-btn" 
+        class="w-full bg-[#1A120B] text-[#D4A373] hover:bg-[#3E2723] font-bold py-3 rounded-xl transition-all shadow text-sm cursor-pointer"
+      >
+        I am 18 or Older — Enter Store
+      </button>
+      <button 
+        id="age-decline-btn" 
+        class="w-full bg-stone-200 text-stone-700 hover:bg-stone-300 font-semibold py-2.5 rounded-xl transition-all text-xs cursor-pointer"
+      >
+        Exit / Under 18
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('age-modal');
+  const verifyBtn = document.getElementById('age-verify-btn');
+  const declineBtn = document.getElementById('age-decline-btn');
+
+  // Immediately check localStorage on execution before full paint to prevent flashing
+  const isVerified = localStorage.getItem('mycoverse_age_verified');
+  
+  if (!isVerified) {
+    modal?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Lock background scrolling
+  }
+
+  verifyBtn?.addEventListener('click', () => {
+    localStorage.setItem('mycoverse_age_verified', 'true');
+    modal?.classList.add('hidden');
+    document.body.style.overflow = '';
+  });
+
+  declineBtn?.addEventListener('click', () => {
+    window.location.href = 'https://www.google.com';
+  });
+</script>

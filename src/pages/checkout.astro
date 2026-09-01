@@ -1,0 +1,434 @@
+---
+// src/pages/checkout.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Secure Checkout | Mycroverse Delivery">
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12">
+    {/* Breadcrumbs */}
+    <nav class="text-xs text-stone-500 mb-6 flex items-center gap-2">
+      <a href="/" class="hover:text-[#D4A373]">Home</a>
+      <span>/</span>
+      <a href="/shop" class="hover:text-[#D4A373]">Shop Catalog</a>
+      <span>/</span>
+      <span class="text-[#D4A373] font-semibold">Secure Checkout</span>
+    </nav>
+
+    {/* Header Banner */}
+    <div id="checkout-header-banner" class="bg-[#3E2723]/10 border border-[#3E2723]/15 rounded-3xl p-6 sm:p-8 mb-10">
+      <span class="text-xs font-bold uppercase tracking-widest text-[#C68B59] bg-[#C68B59]/10 px-3 py-1 rounded-full">
+        Encrypted Portal
+      </span>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1A120B] mt-3 mb-2">Finalize Your Secure Order</h1>
+      <p class="text-xs sm:text-sm text-[#3E2723]/80 max-w-xl">
+        Complete your delivery details and choose your preferred secure payment method below. All transactions are verified and handled discreetly.
+      </p>
+    </div>
+
+    {/* Main Dynamic Checkout Container / Success Card Wrapper */}
+    <div id="checkout-main-wrapper">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* Left Column: Form & Payment Selection (7 Cols) */}
+        <div class="lg:col-span-7 space-y-6">
+          
+          {/* Section 1: Dispatch / Shipping Information */}
+          <div class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-3xl p-6 sm:p-8 shadow-sm">
+            <h2 class="text-base font-bold text-[#1A120B] mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#1A120B] text-[#D4A373] flex items-center justify-center text-xs">1</span>
+              Delivery & Recipient Information
+            </h2>
+            
+            <form id="checkout-form" class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-[#1A120B] mb-1">Full Name or Alias</label>
+                  <input type="text" id="field-name" required placeholder="Liam Daniels" class="w-full text-xs bg-stone-50 border border-stone-200 rounded-xl p-3 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-[#1A120B] mb-1">Secure Contact Phone</label>
+                  <input type="tel" id="field-phone" required placeholder="+1 (555) 019-2834" class="w-full text-xs bg-stone-50 border border-stone-200 rounded-xl p-3 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59]" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#1A120B] mb-1">Delivery Street Address</label>
+                <input type="text" id="field-address" required placeholder="1044 Westwood Blvd, Apt 4B" class="w-full text-xs bg-stone-50 border border-stone-200 rounded-xl p-3 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59]" />
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-[#1A120B] mb-1">City</label>
+                  <input type="text" id="field-city" required placeholder="Los Angeles" class="w-full text-xs bg-stone-50 border border-stone-200 rounded-xl p-3 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-[#1A120B] mb-1">State / Zone</label>
+                  <input type="text" id="field-state" required placeholder="California" class="w-full text-xs bg-stone-50 border border-stone-200 rounded-xl p-3 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59]" />
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                  <label class="block text-xs font-bold text-[#1A120B] mb-1">Postal Code</label>
+                  <input type="text" id="field-postal" required placeholder="90024" class="w-full text-xs bg-stone-50 border border-stone-200 rounded-xl p-3 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59]" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#1A120B] mb-1">Delivery Notes / Special Instructions (Optional)</label>
+                <textarea id="field-notes" rows="2" placeholder="Gate code, leave at front desk, ring twice..." class="w-full text-xs bg-stone-50 border border-stone-200 rounded-xl p-3 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59]"></textarea>
+              </div>
+            </form>
+          </div>
+
+          {/* Section 2: Payment Method Selection */}
+          <div class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-3xl p-6 sm:p-8 shadow-sm">
+            <h2 class="text-base font-bold text-[#1A120B] mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-[#1A120B] text-[#D4A373] flex items-center justify-center text-xs">2</span>
+              Select Secure Payment Method
+            </h2>
+
+            <div class="space-y-4" id="payment-methods-container">
+              
+              {/* Category: Cryptocurrency Group */}
+              <div class="border border-[#3E2723]/15 rounded-2xl p-4 bg-stone-50/60">
+                <span class="block text-xs font-extrabold uppercase tracking-wider text-[#C68B59] mb-3">Cryptocurrency Gateways</span>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  
+                  {/* BTC */}
+                  <label class="payment-option border border-stone-200 bg-white hover:border-[#C68B59] rounded-xl p-3 cursor-pointer transition-all flex items-center gap-2 relative">
+                    <input type="radio" name="payment_method" value="btc" class="accent-[#C68B59]" checked />
+                    <div>
+                      <span class="block text-xs font-bold text-[#1A120B]">Bitcoin</span>
+                      <span class="block text-[9px] text-stone-500">BTC Network</span>
+                    </div>
+                  </label>
+
+                  {/* USDT */}
+                  <label class="payment-option border border-stone-200 bg-white hover:border-[#C68B59] rounded-xl p-3 cursor-pointer transition-all flex items-center gap-2 relative">
+                    <input type="radio" name="payment_method" value="usdt" class="accent-[#C68B59]" />
+                    <div>
+                      <span class="block text-xs font-bold text-[#1A120B]">Tether</span>
+                      <span class="block text-[9px] text-stone-500">TRC-20 / ERC-20</span>
+                    </div>
+                  </label>
+
+                  {/* Ethereum */}
+                  <label class="payment-option border border-stone-200 bg-white hover:border-[#C68B59] rounded-xl p-3 cursor-pointer transition-all flex items-center gap-2 relative">
+                    <input type="radio" name="payment_method" value="eth" class="accent-[#C68B59]" />
+                    <div>
+                      <span class="block text-xs font-bold text-[#1A120B]">Ethereum</span>
+                      <span class="block text-[9px] text-stone-500">ETH Mainnet</span>
+                    </div>
+                  </label>
+
+                </div>
+              </div>
+
+              {/* Category: P2P & Traditional Group */}
+              <div class="border border-[#3E2723]/15 rounded-2xl p-4 bg-stone-50/60">
+                <span class="block text-xs font-extrabold uppercase tracking-wider text-[#C68B59] mb-3">Direct & P2P Transfers</span>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  
+                  {/* Apple Pay */}
+                  <label class="payment-option border border-stone-200 bg-white hover:border-[#C68B59] rounded-xl p-3 cursor-pointer transition-all flex items-center gap-2 relative">
+                    <input type="radio" name="payment_method" value="apple_pay" class="accent-[#C68B59]" />
+                    <div>
+                      <span class="block text-xs font-bold text-[#1A120B]">Apple Pay</span>
+                      <span class="block text-[9px] text-stone-500">Manual verification</span>
+                    </div>
+                  </label>
+
+                  {/* Chime */}
+                  <label class="payment-option border border-stone-200 bg-white hover:border-[#C68B59] rounded-xl p-3 cursor-pointer transition-all flex items-center gap-2 relative">
+                    <input type="radio" name="payment_method" value="chime" class="accent-[#C68B59]" />
+                    <div>
+                      <span class="block text-xs font-bold text-[#1A120B]">Chime Pay</span>
+                      <span class="block text-[9px] text-stone-500">Manual verification</span>
+                    </div>
+                  </label>
+
+                  {/* Zelle */}
+                  <label class="payment-option border border-stone-200 bg-white hover:border-[#C68B59] rounded-xl p-3 cursor-pointer transition-all flex items-center gap-2 relative">
+                    <input type="radio" name="payment_method" value="zelle" class="accent-[#C68B59]" />
+                    <div>
+                      <span class="block text-xs font-bold text-[#1A120B]">Zelle Pay</span>
+                      <span class="block text-[9px] text-stone-500">Manual verification</span>
+                    </div>
+                  </label>
+
+                </div>
+              </div>
+
+            </div>
+
+            {/* Dynamic Payment Instructions Box */}
+            <div id="payment-instruction-box" class="mt-6 bg-[#3E2723]/5 border border-[#3E2723]/10 rounded-2xl p-4 text-xs text-[#3E2723]">
+              <span class="font-bold block mb-1 text-[#1A120B]" id="instruction-title">Bitcoin Payment Instructions:</span>
+              <p id="instruction-text" class="text-stone-600">Our dispatch team will review your order and email/text you the secure payment details within a couple of minutes to 2 hours tops.</p>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Right Column: Order Summary (5 Cols) */}
+        <div class="lg:col-span-5 bg-[#FDFBF7] border border-[#3E2723]/15 rounded-3xl p-6 sm:p-8 shadow-sm sticky top-6">
+          <h2 class="text-base font-bold text-[#1A120B] mb-4 pb-3 border-b border-[#3E2723]/10">Order Summary</h2>
+          
+          {/* Items Mini List */}
+          <div id="checkout-items-list" class="space-y-3 max-h-60 overflow-y-auto mb-6 pr-1">
+            {/* Injected via client script */}
+          </div>
+
+          {/* Cost Breakdown */}
+          <div class="space-y-2 pt-4 border-t border-[#3E2723]/10 text-xs text-stone-600">
+            <div class="flex justify-between">
+              <span>Subtotal:</span>
+              <span id="checkout-subtotal" class="font-semibold text-[#1A120B]">$0.00 USD</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Estimated Tax (8.5%):</span>
+              <span id="checkout-tax" class="font-semibold text-[#1A120B]">$0.00 USD</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Shipping Fee (<span id="checkout-zone-name">Standard</span>):</span>
+              <span id="checkout-shipping" class="font-semibold text-[#1A120B]">$0.00 USD</span>
+            </div>
+            <div class="flex justify-between text-sm font-bold text-[#1A120B] pt-3 border-t border-[#3E2723]/10">
+              <span>Total Due:</span>
+              <span id="checkout-total" class="text-base text-[#C68B59]">$0.00 USD</span>
+            </div>
+          </div>
+
+          <button 
+            type="button" 
+            id="complete-order-btn"
+            class="w-full bg-[#1A120B] text-[#D4A373] hover:bg-[#3E2723] font-bold py-4 rounded-xl transition-all shadow-md text-xs tracking-wider uppercase cursor-pointer flex items-center justify-center gap-2 mt-6"
+          >
+            <span>Confirm & Place Order</span>
+          </button>
+
+          <p class="text-[10px] text-center text-stone-400 mt-4">
+            🔒 Secure 256-bit encrypted checkout. Your privacy is fully protected.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { cartItems, currentShippingZone } from '../store/cartStore.ts';
+
+  const itemsListEl = document.getElementById('checkout-items-list');
+  const subtotalEl = document.getElementById('checkout-subtotal');
+  const taxEl = document.getElementById('checkout-tax');
+  const shippingEl = document.getElementById('checkout-shipping');
+  const zoneNameEl = document.getElementById('checkout-zone-name');
+  const totalEl = document.getElementById('checkout-total');
+  
+  const instructionTitle = document.getElementById('instruction-title');
+  const instructionText = document.getElementById('instruction-text');
+  const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+  const completeBtn = document.getElementById('complete-order-btn');
+  const checkoutMainWrapper = document.getElementById('checkout-main-wrapper');
+  const checkoutHeaderBanner = document.getElementById('checkout-header-banner');
+
+  const paymentGuides: Record<string, { title: string; desc: string }> = {
+    btc: {
+      title: "Bitcoin (BTC) Payment Instructions:",
+      desc: "Our dispatch team will review your order and send you the verified wallet address and exact BTC amount within a couple of minutes to 2 hours tops."
+    },
+    usdt: {
+      title: "Tether (USDT) Payment Instructions:",
+      desc: "Our dispatch team will review your order and send you the correct network deposit address within a couple of minutes to 2 hours tops."
+    },
+    eth: {
+      title: "Ethereum (ETH) Payment Instructions:",
+      desc: "Our dispatch team will review your order and send you the verified ETH deposit instructions within a couple of minutes to 2 hours tops."
+    },
+    apple_pay: {
+      title: "Apple Pay Instructions:",
+      desc: "Our dispatch team will review your order and send you the secure payment confirmation link/tag within a couple of minutes to 2 hours tops."
+    },
+    chime: {
+      title: "Chime Pay Instructions:",
+      desc: "Our dispatch team will review your order and send you the exact Chime tag credentials and reference code within a couple of minutes to 2 hours tops."
+    },
+    zelle: {
+      title: "Zelle Pay Instructions:",
+      desc: "Our dispatch team will review your order and send you the verified recipient contact details within a couple of minutes to 2 hours tops."
+    }
+  };
+
+  paymentRadios.forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const val = (e.target as HTMLInputElement).value;
+      if (paymentGuides[val]) {
+        if (instructionTitle) instructionTitle.textContent = paymentGuides[val].title;
+        if (instructionText) instructionText.textContent = paymentGuides[val].desc;
+      }
+    });
+  });
+
+  function renderCheckoutSummary() {
+    const items = cartItems.get();
+    const zone = currentShippingZone.get();
+
+    if (items.length === 0) {
+      if (itemsListEl) {
+        itemsListEl.innerHTML = `<p class="text-xs text-stone-500 italic text-center py-4">Your cart is empty. <a href="/shop" class="text-[#C68B59] underline">Return to shop</a></p>`;
+      }
+      return;
+    }
+
+    const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const tax = subtotal * 0.085;
+    const shipping = zone.cost;
+    const grandTotal = subtotal + tax + shipping;
+
+    if (subtotalEl) subtotalEl.textContent = `$${subtotal.toFixed(2)} USD`;
+    if (taxEl) taxEl.textContent = `$${tax.toFixed(2)} USD`;
+    if (shippingEl) shippingEl.textContent = `$${shipping.toFixed(2)} USD`;
+    if (zoneNameEl) zoneNameEl.textContent = zone.name.split(' - ')[0];
+    if (totalEl) totalEl.textContent = `$${grandTotal.toFixed(2)} USD`;
+
+    if (itemsListEl) {
+      itemsListEl.innerHTML = items.map(item => `
+        <div class="flex items-center gap-3 bg-stone-50 p-2.5 rounded-xl border border-stone-200">
+          <img src="${item.image}" alt="${item.name}" class="w-10 h-10 object-cover rounded-lg bg-stone-200 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=150&q=80'" />
+          <div class="flex-grow min-w-0">
+            <h4 class="text-xs font-bold text-[#1A120B] truncate">${item.name}</h4>
+            <p class="text-[10px] text-stone-500">Qty: ${item.quantity} | ${item.variant}</p>
+          </div>
+          <span class="text-xs font-bold text-[#1A120B]">$${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  cartItems.subscribe(renderCheckoutSummary);
+  currentShippingZone.subscribe(renderCheckoutSummary);
+  renderCheckoutSummary();
+
+  completeBtn?.addEventListener('click', async () => {
+    const form = document.getElementById('checkout-form') as HTMLFormElement;
+    if (form && !form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const items = cartItems.get();
+    if (items.length === 0) {
+      alert('Your cart is empty.');
+      return;
+    }
+
+    const zone = currentShippingZone.get();
+    const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const tax = subtotal * 0.085;
+    const shippingCost = zone.cost;
+    const grandTotal = subtotal + tax + shippingCost;
+
+    const customerName = (document.getElementById('field-name') as HTMLInputElement)?.value || '';
+    const customerPhone = (document.getElementById('field-phone') as HTMLInputElement)?.value || '';
+    const customerAddress = (document.getElementById('field-address') as HTMLInputElement)?.value || '';
+    const customerCity = (document.getElementById('field-city') as HTMLInputElement)?.value || '';
+    const customerState = (document.getElementById('field-state') as HTMLInputElement)?.value || '';
+    const customerPostalCode = (document.getElementById('field-postal') as HTMLInputElement)?.value || '';
+    const customerNotes = (document.getElementById('field-notes') as HTMLTextAreaElement)?.value || '';
+
+    const selectedPayment = (document.querySelector('input[name="payment_method"]:checked') as HTMLInputElement)?.value || 'btc';
+
+    const payload = {
+      customerName,
+      customerPhone,
+      customerAddress,
+      customerCity,
+      customerState,
+      customerPostalCode,
+      customerNotes,
+      paymentMethod: selectedPayment,
+      shippingZoneName: zone.name,
+      shippingCost,
+      subtotal,
+      tax,
+      grandTotal,
+      items
+    };
+
+    try {
+      completeBtn.setAttribute('disabled', 'true');
+      completeBtn.textContent = 'Processing Secure Order...';
+
+      const response = await fetch('/api/submit-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        cartItems.set([]); // Clear the shopping cart store
+
+        // Hide header banner and swap checkout form wrapper with a modern sleek success state card
+        if (checkoutHeaderBanner) checkoutHeaderBanner.style.display = 'none';
+        if (checkoutMainWrapper) {
+          checkoutMainWrapper.innerHTML = `
+            <div class="max-w-2xl mx-auto bg-[#FDFBF7] border border-[#3E2723]/15 rounded-3xl p-8 sm:p-12 text-center shadow-lg my-8 animate-fadeIn">
+              <div class="w-16 h-16 bg-[#C68B59]/10 text-[#C68B59] rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
+                ✓
+              </div>
+              <span class="text-xs font-bold uppercase tracking-widest text-[#C68B59] bg-[#C68B59]/10 px-3 py-1 rounded-full">
+                Order Received Successfully
+              </span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1A120B] mt-4 mb-3">Thank You, ${customerName}!</h2>
+              <p class="text-xs sm:text-sm text-stone-600 leading-relaxed mb-8 max-w-lg mx-auto">
+                Your order has been securely logged and encrypted. Our dispatch team is reviewing your delivery details and will reach out shortly with your verified payment instructions.
+              </p>
+              
+              <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 text-left text-xs space-y-2 mb-8 max-w-md mx-auto">
+                <div class="flex justify-between text-stone-500">
+                  <span>Payment Channel:</span>
+                  <span class="font-bold uppercase text-[#1A120B]">${selectedPayment}</span>
+                </div>
+                <div class="flex justify-between text-stone-500">
+                  <span>Delivery Destination:</span>
+                  <span class="font-bold text-[#1A120B] truncate max-w-[200px]">${customerAddress}, ${customerCity}</span>
+                </div>
+                <div class="flex justify-between text-stone-500 pt-2 border-t border-stone-200">
+                  <span>Total Amount Due:</span>
+                  <span class="font-bold text-[#C68B59]">$${grandTotal.toFixed(2)} USD</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a 
+                  href="/" 
+                  class="bg-[#1A120B] text-[#D4A373] hover:bg-[#3E2723] font-bold py-3.5 px-8 rounded-xl transition-all shadow-md text-xs tracking-wider uppercase inline-flex items-center justify-center gap-2"
+                >
+                  Return to Homepage
+                </a>
+                <a 
+                  href="/shop" 
+                  class="bg-stone-100 text-[#1A120B] hover:bg-stone-200 font-bold py-3.5 px-6 rounded-xl transition-all text-xs tracking-wider uppercase inline-flex items-center justify-center gap-2"
+                >
+                  Continue Browsing
+                </a>
+              </div>
+            </div>
+          `;
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert(result.error || 'Failed to submit order. Please try again.');
+        completeBtn.removeAttribute('disabled');
+        completeBtn.textContent = 'Confirm & Place Order';
+      }
+    } catch (err) {
+      console.error('Checkout network error:', err);
+      alert('Network connection error. Please try again.');
+      completeBtn.removeAttribute('disabled');
+      completeBtn.textContent = 'Confirm & Place Order';
+    }
+  });
+</script>

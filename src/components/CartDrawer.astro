@@ -1,0 +1,239 @@
+---
+// src/components/CartDrawer.astro
+---
+<div id="cart-drawer-container" class="relative z-[99]">
+  {/* Backdrop */}
+  <div id="cart-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity opacity-0 pointer-events-none duration-300"></div>
+
+  {/* Drawer Panel */}
+  <div id="cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-[#FDFBF7] shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col z-[100]">
+    
+    {/* Drawer Header */}
+    <div class="p-6 border-b border-[#3E2723]/10 flex items-center justify-between bg-[#1A120B] text-[#FDFBF7]">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[#D4A373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <h2 class="text-base font-bold">Your Secure Cart</h2>
+      </div>
+      <button id="cart-close-btn" aria-label="Close cart" class="p-2 text-stone-400 hover:text-white rounded-full transition-colors cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    {/* Drawer Body (Items List) */}
+    <div id="cart-items-container" class="flex-grow overflow-y-auto p-6 space-y-4">
+      <!-- Injected dynamically by cartStore -->
+    </div>
+
+    {/* Drawer Footer & Checkout */}
+    <div class="p-6 border-t border-[#3E2723]/10 bg-stone-50 space-y-3">
+      {/* Shipping Zone Selector */}
+      <div class="bg-white p-3 rounded-xl border border-[#3E2723]/10">
+        <label for="shipping-zone-select" class="block text-[11px] font-bold text-[#1A120B] mb-1">Select Shipping / Dispatch Zone:</label>
+        <select id="shipping-zone-select" class="w-full text-xs bg-stone-50 border border-stone-200 rounded-lg p-2 text-[#1A120B] font-medium focus:outline-none focus:border-[#C68B59] cursor-pointer">
+          <!-- Dynamically populated -->
+        </select>
+      </div>
+
+      <div class="space-y-1.5 pt-2">
+        <div class="flex items-center justify-between text-xs text-stone-600">
+          <span>Subtotal:</span>
+          <span id="cart-subtotal-price" class="font-semibold">$0.00 USD</span>
+        </div>
+        <div class="flex items-center justify-between text-xs text-stone-600">
+          <span>Estimated Tax (8.5%):</span>
+          <span id="cart-tax-price" class="font-semibold">$0.00 USD</span>
+        </div>
+        <div class="flex items-center justify-between text-xs text-stone-600">
+          <span>Shipping Fee:</span>
+          <span id="cart-shipping-price" class="font-semibold">$0.00 USD</span>
+        </div>
+        <div class="flex items-center justify-between text-sm font-bold text-[#1A120B] pt-2 border-t border-[#3E2723]/10">
+          <span>Estimated Total:</span>
+          <span id="cart-total-price">$0.00 USD</span>
+        </div>
+      </div>
+      
+      <button 
+        id="checkout-btn" 
+        class="w-full bg-[#1A120B] text-[#D4A373] hover:bg-[#3E2723] font-bold py-3.5 rounded-xl transition-all shadow-md text-xs tracking-wider uppercase cursor-pointer flex items-center justify-center gap-2 mt-2"
+      >
+        <span>Proceed to Secure Checkout</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { cartItems, currentShippingZone, SHIPPING_ZONES, removeFromCart, updateQuantity, setShippingZone } from '../store/cartStore.ts';
+
+  const drawer = document.getElementById('cart-drawer');
+  const backdrop = document.getElementById('cart-backdrop');
+  const trigger = document.getElementById('cart-trigger');
+  const closeBtn = document.getElementById('cart-close-btn');
+  const itemsContainer = document.getElementById('cart-items-container');
+  const subtotalPriceEl = document.getElementById('cart-subtotal-price');
+  const taxPriceEl = document.getElementById('cart-tax-price');
+  const shippingPriceEl = document.getElementById('cart-shipping-price');
+  const totalPriceEl = document.getElementById('cart-total-price');
+  const shippingSelect = document.getElementById('shipping-zone-select') as HTMLSelectElement;
+  const checkoutBtn = document.getElementById('checkout-btn');
+
+  function isOpen() {
+    return !drawer?.classList.contains('translate-x-full');
+  }
+
+  function openCart() {
+    drawer?.classList.remove('translate-x-full');
+    backdrop?.classList.remove('opacity-0', 'pointer-events-none');
+    backdrop?.classList.add('opacity-100', 'pointer-events-auto');
+  }
+
+  function closeCart() {
+    drawer?.classList.add('translate-x-full');
+    backdrop?.classList.remove('opacity-100', 'pointer-events-auto');
+    backdrop?.classList.add('opacity-0', 'pointer-events-none');
+  }
+
+  // Expose global open helper for product card buttons
+  (window as any).openMycoVerseCart = openCart;
+
+  // Toggle behavior on cart button click
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isOpen()) {
+      closeCart();
+    } else {
+      openCart();
+    }
+  });
+
+  closeBtn?.addEventListener('click', closeCart);
+  backdrop?.addEventListener('click', closeCart);
+
+  // Handle checkout button navigation to /checkout
+  checkoutBtn?.addEventListener('click', () => {
+    closeCart();
+    window.location.href = '/checkout';
+  });
+
+  // Populate shipping zones dropdown once
+  if (shippingSelect) {
+    shippingSelect.innerHTML = SHIPPING_ZONES.map(zone => `
+      <option value="${zone.id}" ${zone.id === currentShippingZone.get().id ? 'selected' : ''}>
+        ${zone.name} - $${zone.cost.toFixed(2)} (${zone.deliveryTime})
+      </option>
+    `).join('');
+
+    shippingSelect.addEventListener('change', (e) => {
+      const target = e.target as HTMLSelectElement;
+      setShippingZone(target.value);
+    });
+  }
+
+  // Combined reactive updates for cart items, tax, and shipping zone changes
+  function updateCartUI() {
+    const items = cartItems.get();
+    const zone = currentShippingZone.get();
+
+    // 1. Update Counter Badges across the page
+    const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+    document.querySelectorAll('.cart-counter-badge').forEach((badge) => {
+      badge.textContent = totalCount.toString();
+    });
+
+    // 2. Calculate Subtotal, Tax (8.5%), Shipping, and Grand Total
+    const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const taxCost = subtotal * 0.085;
+    const shippingCost = items.length > 0 ? zone.cost : 0;
+    const grandTotal = subtotal + taxCost + (items.length > 0 ? shippingCost : 0);
+
+    if (subtotalPriceEl) subtotalPriceEl.textContent = `$${subtotal.toFixed(2)} USD`;
+    if (taxPriceEl) taxPriceEl.textContent = `$${taxCost.toFixed(2)} USD`;
+    if (shippingPriceEl) shippingPriceEl.textContent = `$${shippingCost.toFixed(2)} USD`;
+    if (totalPriceEl) totalPriceEl.textContent = `$${grandTotal.toFixed(2)} USD`;
+
+    // Update selected option in dropdown if changed externally
+    if (shippingSelect && shippingSelect.value !== zone.id) {
+      shippingSelect.value = zone.id;
+    }
+
+    // 3. Render Cart Items inside Drawer
+    if (!itemsContainer) return;
+
+    if (items.length === 0) {
+      itemsContainer.innerHTML = `
+        <div class="text-center py-16">
+          <p class="text-sm font-semibold text-[#1A120B]">Your cart is empty</p>
+          <p class="text-xs text-stone-500 mt-1">Explore our collections and add products to your cart.</p>
+        </div>
+      `;
+      return;
+    }
+
+    itemsContainer.innerHTML = items.map((item) => `
+      <div class="flex items-center gap-4 bg-white border border-[#3E2723]/10 p-3 rounded-2xl shadow-sm">
+        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-xl bg-stone-100 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=200&q=80'" />
+        <div class="flex-grow min-w-0">
+          <h4 class="text-xs font-bold text-[#1A120B] truncate">${item.name}</h4>
+          <p class="text-[10px] text-[#C68B59] font-medium mt-0.5">Option: ${item.variant}</p>
+          <p class="text-xs font-extrabold text-[#1A120B] mt-1">$${(item.price * item.quantity).toFixed(2)} USD</p>
+        </div>
+        <div class="flex flex-col items-end justify-between h-full gap-2">
+          <button type="button" aria-label="Remove item" class="text-stone-400 hover:text-red-600 transition-colors remove-item-btn cursor-pointer" data-id="${item.id}" data-variant="${item.variant}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+          <div class="flex items-center border border-stone-200 rounded-lg overflow-hidden bg-stone-50 text-xs">
+            <button type="button" aria-label="Decrease quantity" class="px-2 py-0.5 text-stone-600 hover:bg-stone-200 decrease-qty-btn cursor-pointer" data-id="${item.id}" data-variant="${item.variant}">-</button>
+            <span class="px-2 font-semibold text-[#1A120B]">${item.quantity}</span>
+            <button type="button" aria-label="Increase quantity" class="px-2 py-0.5 text-stone-600 hover:bg-stone-200 increase-qty-btn cursor-pointer" data-id="${item.id}" data-variant="${item.variant}">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Attach dynamic listeners to newly rendered items
+    itemsContainer.querySelectorAll('.remove-item-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        removeFromCart(target.dataset.id!, target.dataset.variant!);
+      });
+    });
+
+    itemsContainer.querySelectorAll('.increase-qty-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const id = target.dataset.id!;
+        const variant = target.dataset.variant!;
+        const currentItem = items.find(i => i.id === id && i.variant === variant);
+        if (currentItem) {
+          updateQuantity(id, variant, currentItem.quantity + 1);
+        }
+      });
+    });
+
+    itemsContainer.querySelectorAll('.decrease-qty-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const id = target.dataset.id!;
+        const variant = target.dataset.variant!;
+        const currentItem = items.find(i => i.id === id && i.variant === variant);
+        if (currentItem) {
+          updateQuantity(id, variant, currentItem.quantity - 1);
+        }
+      });
+    });
+  }
+
+  // Subscribe to both cart items and shipping zone changes
+  cartItems.subscribe(updateCartUI);
+  currentShippingZone.subscribe(updateCartUI);
+
+  // Initial call on load
+  updateCartUI();
+</script>

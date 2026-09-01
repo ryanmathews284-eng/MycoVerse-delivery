@@ -1,0 +1,223 @@
+---
+// src/pages/shop/[slug].astro
+import Layout from '../../layouts/Layout.astro';
+import VariantSelector from '../../components/VariantSelector.astro';
+import { PRODUCTS } from '../../data/products';
+
+export async function getStaticPaths() {
+  return PRODUCTS.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+
+if (!product) {
+  return Astro.redirect('/404');
+}
+
+// Import all product images dynamically from assets using glob
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/*.{jpeg,jpg,png,webp}');
+const imagePath = `/src/assets/images/${product.slug}.jpg`;
+let productImage;
+if (images[imagePath]) {
+  productImage = await images[imagePath]();
+}
+
+// JSON-LD Schema for Google Rich Snippets & AI Search Citations
+const jsonLd = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": product.name,
+  "image": [productImage ? productImage.default.src : new URL(`/images/${product.slug}.jpg`, Astro.url).toString()],
+  "description": product.description,
+  "sku": product.id,
+  "brand": {
+    "@type": "Brand",
+    "name": "MycoVerse Delivery"
+  },
+  "review": {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": product.rating.toString(),
+      "bestRating": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Verified Customer"
+    }
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": product.rating.toString(),
+    "reviewCount": product.reviewsCount.toString()
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD",
+    "lowPrice": product.variants[0].price.toString(),
+    "highPrice": product.variants[product.variants.length - 1].price.toString(),
+    "offerCount": product.variants.length.toString(),
+    "availability": "https://schema.org/InStock",
+    "seller": {
+      "@type": "Organization",
+      "name": "MycoVerse Dispatch Hub - Los Angeles, CA"
+    }
+  }
+};
+---
+
+<Layout 
+  title={`${product.name} | Buy Online US & Canada | MycoVerse Delivery`}
+  description={`${product.description} Dispatched securely from Los Angeles, CA with discreet smell-proof packaging.`}
+>
+  <!-- Structured Data for SEO & AI Search Engines -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12" data-product-card={product.id}>
+    {/* Breadcrumbs */}
+    <nav class="text-xs text-stone-500 mb-6 flex items-center gap-2" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-[#D4A373]">Home</a>
+      <span>/</span>
+      <a href="/shop" class="hover:text-[#D4A373]">Shop Catalog</a>
+      <span>/</span>
+      <a href={`/shop/${product.category}`} class="hover:text-[#D4A373] capitalize">{product.categoryTitle}</a>
+      <span>/</span>
+      <span class="text-[#D4A373] font-semibold truncate">{product.name}</span>
+    </nav>
+
+    {/* Product Main Container */}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mb-16">
+      {/* Left: Product Image */}
+      <div class="bg-stone-200 border border-[#3E2723]/15 rounded-3xl overflow-hidden relative shadow-md w-full aspect-square lg:aspect-4/3 lg:max-h-[420px] flex items-center justify-center sticky top-28">
+        <img 
+          src={productImage ? productImage.default.src : `/images/${product.slug}.jpg`} 
+          alt={product.name} 
+          class="w-full h-full object-cover"
+          onerror="this.src='https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=800&q=80'"
+        />
+        <span class="absolute top-4 left-4 bg-[#D4A373] text-[#1A120B] text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow">
+          {product.badge}
+        </span>
+      </div>
+
+      {/* Right: Product Info & Actions */}
+      <div class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-[10px] uppercase font-bold text-stone-400 tracking-widest bg-stone-100 px-2.5 py-1 rounded-md">{product.categoryTitle}</span>
+            <span class="text-xs font-bold text-[#C68B59] flex items-center gap-1">⭐ {product.rating} <span class="text-stone-400 font-normal">({product.reviewsCount} verified reviews)</span></span>
+          </div>
+
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-[#1A120B] mb-3">{product.name}</h1>
+          <p class="text-xs sm:text-sm text-[#3E2723]/80 leading-relaxed mb-6">{product.description}</p>
+          
+          {/* Price Container */}
+          <div class="mb-6 bg-[#3E2723]/5 p-4 rounded-2xl border border-[#3E2723]/10 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] text-stone-500 font-medium block">Current Price</span>
+              <span class="product-price text-xl font-extrabold text-[#1A120B]" data-base-price={product.variants[0].price}>
+                ${product.variants[0].price.toFixed(2)} USD
+              </span>
+            </div>
+            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">In Stock & Ready</span>
+          </div>
+
+          {/* Variant Selector Component */}
+          <div class="mb-6">
+            <label class="block text-xs font-bold text-[#1A120B] mb-2">Select Dosage / Weight Option:</label>
+            <VariantSelector productId={product.id} variants={product.variants} />
+          </div>
+        </div>
+
+        {/* Add to Cart Action */}
+        <div class="space-y-3 pt-4 border-t border-[#3E2723]/10">
+          <button 
+            type="button"
+            class="add-to-cart-btn w-full bg-[#1A120B] text-[#D4A373] hover:bg-[#3E2723] transition-all text-center text-xs sm:text-sm font-bold py-3.5 rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-2"
+            data-product-id={product.id}
+            data-product-name={product.name}
+            data-product-image={productImage ? productImage.default.src : `/images/${product.slug}.jpg`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            Add to Secure Cart
+          </button>
+          <p class="text-[10px] text-center text-stone-500">Dispatched in smell-proof, temperature-controlled packaging from Los Angeles, CA.</p>
+        </div>
+      </div>
+    </div>
+
+    {/* SEO Rich Content Section: Deep Product Overview, Ingredients & Lab Certification */}
+    <section class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-3xl p-6 sm:p-10 shadow-sm space-y-8 mb-16">
+      <div>
+        <h2 class="text-xl font-bold text-[#1A120B] mb-3">Product Overview & Origin</h2>
+        <p class="text-xs sm:text-sm text-stone-700 leading-relaxed">
+          {product.longDescription}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-[#3E2723]/10">
+        <div>
+          <h3 class="text-sm font-bold text-[#1A120B] mb-3 uppercase tracking-wider">🧪 Ingredients & Formulation</h3>
+          <ul class="space-y-2">
+            {product.ingredients.map(ing => (
+              <li class="text-xs text-stone-700 flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#D4A373]"></span>
+                {ing}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-bold text-[#1A120B] mb-3 uppercase tracking-wider">🔒 Quality & Lab Verification</h3>
+          <p class="text-xs text-stone-700 leading-relaxed bg-[#3E2723]/5 p-4 rounded-xl border border-[#3E2723]/10">
+            <strong>Lab Status:</strong> {product.labTested}<br />
+            Every batch dispatched from our Los Angeles dispatch terminal undergoes strict assay screening to guarantee safety, uniform concentration, and absolute discreet cross-border delivery.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  import { addToCart } from '../../store/cartStore.ts';
+
+  document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLElement;
+      const card = btn.closest('[data-product-card]');
+      if (!card) return;
+
+      const id = btn.dataset.productId!;
+      const name = btn.dataset.productName!;
+      const image = btn.dataset.productImage!;
+
+      const selectEl = card.querySelector('select') as HTMLSelectElement;
+      let variantName = selectEl ? selectEl.options[selectEl.selectedIndex].text.split(' - ')[0] : 'Standard';
+      let price = selectEl ? parseFloat(selectEl.value) : 0;
+
+      if (isNaN(price)) {
+        const priceEl = card.querySelector('.product-price');
+        price = priceEl ? parseFloat(priceEl.textContent?.replace('$', '').replace(' USD', '') || '0') : 0;
+      }
+
+      addToCart({
+        id,
+        name,
+        price,
+        image,
+        variant: variantName
+      });
+
+      if ((window as any).openMycoVerseCart) {
+        (window as any).openMycoVerseCart();
+      }
+    });
+  });
+</script>

@@ -1,0 +1,146 @@
+---
+// src/pages/shop/chocolates.astro
+import Layout from '../../layouts/Layout.astro';
+import VariantSelector from '../../components/VariantSelector.astro';
+import { PRODUCTS } from '../../data/products';
+
+// Filter products specifically for Artisan Chocolates
+const categoryProducts = PRODUCTS.filter(p => p.category === 'chocolates');
+
+// Load all images from assets
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/*.{jpeg,jpg,png,webp}');
+---
+
+<Layout title="Artisan Chocolates & Infused Bars | MycoVerse Delivery Los Angeles">
+  <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-12">
+    {/* Breadcrumbs */}
+    <nav class="text-xs text-stone-500 mb-6 flex items-center gap-2">
+      <a href="/" class="hover:text-[#D4A373]">Home</a>
+      <span>/</span>
+      <a href="/shop" class="hover:text-[#D4A373]">Shop Catalog</a>
+      <span>/</span>
+      <span class="text-[#D4A373] font-semibold">Artisan Chocolates</span>
+    </nav>
+
+    {/* Category Header Banner */}
+    <div class="bg-[#3E2723]/10 border border-[#3E2723]/15 rounded-3xl p-8 mb-12">
+      <span class="text-xs font-bold uppercase tracking-widest text-[#C68B59] bg-[#C68B59]/10 px-3 py-1 rounded-full">
+        Category Archive
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-[#1A120B] mt-3 mb-2">Artisan Chocolates & Infused Bars</h1>
+      <p class="text-sm sm:text-base text-[#3E2723]/80 max-w-2xl">
+        Precision-dosed Belgian dark and milk chocolate bars crafted to mask earthy undertones while delivering smooth, predictable experiences. Dispatched directly from our Los Angeles facility.
+      </p>
+    </div>
+
+    {/* Category Filter Navigation Bar */}
+    <div class="flex flex-wrap gap-2 mb-10 pb-4 border-b border-[#3E2723]/10">
+      <a href="/shop/chocolates" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#1A120B] text-[#FDFBF7]">Artisan Chocolates</a>
+      <a href="/shop/strains" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#3E2723]/10 text-[#3E2723] hover:bg-[#3E2723]/20 transition-all">Dried Strains</a>
+      <a href="/shop/microdose" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#3E2723]/10 text-[#3E2723] hover:bg-[#3E2723]/20 transition-all">Microdose Stacks</a>
+      <a href="/shop/gummies" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#3E2723]/10 text-[#3E2723] hover:bg-[#3E2723]/20 transition-all">Gummies & Extracts</a>
+    </div>
+
+    {/* Product Grid: 2 columns on mobile, 4 columns on desktop */}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+      {categoryProducts.map(async (prod) => {
+        const imagePath = `/src/assets/images/${prod.slug}.jpg`;
+        const prodImage = images[imagePath] ? (await images[imagePath]()).default.src : `/images/${prod.slug}.jpg`;
+
+        return (
+          <article class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-xl sm:rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between" data-product-card={prod.id}>
+            <div>
+              <div class="h-40 sm:h-48 bg-stone-200 relative overflow-hidden">
+                <img 
+                  src={prodImage} 
+                  alt={prod.name} 
+                  class="w-full h-full object-cover"
+                  onerror="this.src='https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80'"
+                />
+                <span class="absolute top-2 left-2 bg-[#D4A373] text-[#1A120B] text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded shadow">
+                  {prod.badge}
+                </span>
+              </div>
+              
+              <div class="p-3.5 sm:p-5">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[9px] uppercase font-bold text-stone-400 tracking-wider">{prod.categoryTitle}</span>
+                  <span class="text-[11px] font-bold text-[#C68B59]">⭐ {prod.rating} ({prod.reviewsCount})</span>
+                </div>
+                <h3 class="text-sm sm:text-base font-bold text-[#1A120B] mb-1 truncate">{prod.name}</h3>
+                <p class="text-[11px] text-[#3E2723]/70 mb-3 line-clamp-2">{prod.description}</p>
+                
+                {/* Price & Variant Selector */}
+                <div class="mb-3 bg-[#3E2723]/5 p-2 rounded-lg flex items-center justify-between">
+                  <span class="text-[11px] text-stone-500 font-medium">Price:</span>
+                  <span class="product-price text-sm font-extrabold text-[#1A120B]" data-base-price={prod.variants[0].price}>
+                    ${prod.variants[0].price.toFixed(2)} USD
+                  </span>
+                </div>
+
+                <div class="mb-2">
+                  <VariantSelector productId={prod.id} variants={prod.variants} />
+                </div>
+              </div>
+            </div>
+
+            <div class="p-3.5 sm:p-5 pt-0 flex flex-col gap-2">
+              <button 
+                type="button"
+                class="add-to-cart-btn w-full bg-[#1A120B] text-[#D4A373] hover:bg-[#3E2723] transition-all text-center text-[11px] sm:text-xs font-bold py-2.5 rounded-lg shadow cursor-pointer flex items-center justify-center gap-2"
+                data-product-id={prod.id}
+                data-product-name={prod.name}
+                data-product-image={prodImage}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                Add to Cart
+              </button>
+              <a href={`/shop/${prod.slug}`} class="block text-center text-[10px] sm:text-xs text-[#C68B59] hover:underline font-semibold">
+                View Details &rarr;
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </main>
+</Layout>
+
+<script>
+  import { addToCart } from '../../store/cartStore.ts';
+
+  document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLElement;
+      const card = btn.closest('article');
+      if (!card) return;
+
+      const id = btn.dataset.productId!;
+      const name = btn.dataset.productName!;
+      const image = btn.dataset.productImage!;
+
+      const selectEl = card.querySelector('select') as HTMLSelectElement;
+      let variantName = selectEl ? selectEl.options[selectEl.selectedIndex].text.split(' - ')[0] : 'Standard';
+      let price = selectEl ? parseFloat(selectEl.value) : 0;
+
+      if (isNaN(price)) {
+        const priceEl = card.querySelector('.product-price');
+        price = priceEl ? parseFloat(priceEl.textContent?.replace('$', '').replace(' USD', '') || '0') : 0;
+      }
+
+      addToCart({
+        id,
+        name,
+        price,
+        image,
+        variant: variantName
+      });
+
+      if ((window as any).openMycoVerseCart) {
+        (window as any).openMycoVerseCart();
+      }
+    });
+  });
+</script>

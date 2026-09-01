@@ -1,0 +1,27 @@
+---
+import { REVIEWS } from '../data/products';
+---
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="text-center mb-12">
+    <h2 class="text-2xl sm:text-3xl font-bold text-[#1A120B]">Verified North American Reviews</h2>
+    <p class="text-xs uppercase tracking-widest text-[#C68B59] mt-2 font-semibold">Real Feedback On Our Products & Secure Shipping</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {REVIEWS.map((rev) => (
+      <div class="bg-[#FDFBF7] border border-[#3E2723]/15 p-6 rounded-2xl shadow-sm relative flex flex-col justify-between">
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-[#D4A373] text-sm">{rev.stars}</span>
+            <span class="text-[10px] font-bold text-[#C68B59] bg-[#C68B59]/10 px-2 py-0.5 rounded">Verified Order & Delivery</span>
+          </div>
+          <p class="text-xs text-[#3E2723]/80 leading-relaxed mb-4 italic">"{rev.comment}"</p>
+        </div>
+        <div class="pt-4 border-t border-[#3E2723]/10 flex justify-between items-center text-xs">
+          <span class="font-bold text-[#1A120B]">— {rev.author}, {rev.location}</span>
+          <span class="text-[10px] text-stone-500">{rev.productRef}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

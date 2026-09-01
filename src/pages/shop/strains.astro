@@ -1,0 +1,168 @@
+---
+// src/pages/shop/strains.astro
+import Layout from '../../layouts/Layout.astro';
+import VariantSelector from '../../components/VariantSelector.astro';
+import { PRODUCTS } from '../../data/products';
+
+const strainProducts = PRODUCTS.filter((p: any) => p.category === 'strains');
+const images = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/*.{jpeg,jpg,png,webp}');
+---
+
+<Layout 
+  title="Dried Strains & Premium Fungi Dispatch | MycoVerse Delivery LA"
+  description="Order lab-verified dried functional and botanical mycology strains online. Secure, vacuum-sealed priority dispatch from Los Angeles, CA across the US and Canada."
+>
+  <div class="bg-[#1A120B] text-[#FDFBF7] py-16 px-4 sm:px-6 lg:px-8 border-b border-[#3E2723]">
+    <div class="max-w-7xl mx-auto">
+      <nav class="text-xs text-[#D4A373] mb-4 tracking-wider uppercase font-semibold flex items-center gap-2">
+        <a href="/" class="hover:underline">Home</a> &gt; <a href="/shop" class="hover:underline">Shop</a> &gt; <span class="text-stone-300">Dried Strains & Fungi</span>
+      </nav>
+      <h1 class="text-4xl sm:text-5xl font-black tracking-tight mb-4">
+        Elite Dried <span class="text-[#D4A373]">Strains & Fungi.</span>
+      </h1>
+      <p class="max-w-2xl text-stone-300 text-sm sm:text-base leading-relaxed">
+        Sourced from premier cultivators and rigorously lab-tested. Every batch of dried mycology and botanical strains is vacuum-sealed at our Los Angeles facility to preserve maximum potency, integrity, and freshness.
+      </p>
+    </div>
+  </div>
+
+  <section class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-16">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 border-b border-[#3E2723]/10 pb-6 px-2 sm:px-0">
+      <div>
+        <h2 class="text-2xl font-bold text-[#1A120B]">Available Catalog Strains</h2>
+        <p class="text-xs text-[#3E2723]/70 mt-1">Showing verified stock dispatched directly from Los Angeles, CA</p>
+      </div>
+      <div class="flex items-center gap-2 text-xs font-semibold bg-[#3E2723]/5 px-4 py-2 rounded-xl text-[#3E2723]">
+        <span>🔒 Vacuum-Sealed & Discrete Priority Shipping</span>
+      </div>
+    </div>
+
+    {/* Category Filter Navigation Bar */}
+    <div class="flex flex-wrap gap-2 mb-10 pb-4 border-b border-[#3E2723]/10">
+      <a href="/shop/chocolates" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#3E2723]/10 text-[#3E2723] hover:bg-[#3E2723]/20 transition-all">Artisan Chocolates</a>
+      <a href="/shop/strains" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#1A120B] text-[#FDFBF7]">Dried Strains</a>
+      <a href="/shop/microdose" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#3E2723]/10 text-[#3E2723] hover:bg-[#3E2723]/20 transition-all">Microdose Stacks</a>
+      <a href="/shop/gummies" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#3E2723]/10 text-[#3E2723] hover:bg-[#3E2723]/20 transition-all">Gummies & Extracts</a>
+    </div>
+
+    {strainProducts.length > 0 ? (
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        {strainProducts.map(async (product: any) => {
+          const imagePath = `/src/assets/images/${product.slug}.jpg`;
+          const prodImage = images[imagePath] ? (await images[imagePath]()).default.src : `/images/${product.slug}.jpg`;
+
+          return (
+            <article class="bg-[#FDFBF7] border border-[#3E2723]/15 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all flex flex-col group justify-between" data-product-card={product.id}>
+              <div>
+                <div class="aspect-[4/3] bg-stone-200 relative overflow-hidden">
+                  <img 
+                    src={prodImage} 
+                    alt={product.name}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onerror="this.src='https://images.unsplash.com/photo-1550989460-0adf9ea622e2?auto=format&fit=crop&w=600&q=80'"
+                  />
+                  <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-[#1A120B]/80 backdrop-blur-md text-[#D4A373] text-[9px] sm:text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest border border-[#D4A373]/20">
+                    {product.badge || 'Lab Tested'}
+                  </span>
+                </div>
+                <div class="p-3 sm:p-5">
+                  <div class="flex items-center justify-between gap-1 mb-1">
+                    <span class="text-[9px] sm:text-[10px] font-bold text-[#C68B59] uppercase tracking-widest">{product.categoryTitle}</span>
+                    <div class="flex items-center gap-1 text-[11px] font-semibold text-[#3E2723]">
+                      <span>⭐ {product.rating} ({product.reviewsCount})</span>
+                    </div>
+                  </div>
+                  <h3 class="text-sm sm:text-base font-bold text-[#1A120B] mt-1 mb-1.5 leading-tight truncate">{product.name}</h3>
+                  <p class="text-[11px] sm:text-xs text-[#3E2723]/80 leading-relaxed line-clamp-2 mb-3">{product.description}</p>
+                  
+                  {/* Price Display */}
+                  <div class="mb-3 bg-[#3E2723]/5 p-2 rounded-lg flex items-center justify-between">
+                    <span class="text-[11px] text-stone-500 font-medium">Price:</span>
+                    <span class="product-price text-sm font-extrabold text-[#1A120B]" data-base-price={product.variants[0].price}>
+                      ${product.variants[0].price.toFixed(2)} USD
+                    </span>
+                  </div>
+
+                  <div class="mb-3">
+                    <VariantSelector productId={product.id} variants={product.variants} />
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-3 sm:p-5 pt-0 space-y-2">
+                <button 
+                  type="button"
+                  class="add-to-cart-btn w-full bg-[#1A120B] text-[#D4A373] text-xs font-bold py-3 rounded-xl hover:bg-[#3E2723] transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  data-product-id={product.id}
+                  data-product-name={product.name}
+                  data-product-image={prodImage}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#D4A373]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                  <span>Add to Secure Cart</span>
+                </button>
+
+                <a href={`/shop/${product.slug}`} class="block text-center text-[10px] text-[#C68B59] hover:underline font-semibold py-1">
+                  View Details &rarr;
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="text-center py-20 bg-stone-100 rounded-2xl border border-dashed border-stone-300">
+        <p class="text-base font-semibold text-[#1A120B]">New Strains Maturing Soon</p>
+        <p class="text-xs text-stone-500 mt-1">Check back shortly or browse our other active botanical collections.</p>
+        <a href="/shop" class="inline-block mt-6 bg-[#1A120B] text-[#FDFBF7] text-xs font-bold px-6 py-3 rounded-xl">View Complete Catalog</a>
+      </div>
+    )}
+  </section>
+
+  <section class="bg-[#F4EFE6] border-t border-[#3E2723]/10 py-16 px-4 sm:px-6 lg:px-8 mt-12">
+    <div class="max-w-4xl mx-auto space-y-4 text-center">
+      <h2 class="text-xl font-bold text-[#1A120B]">Why Source Dried Strains from MycoVerse Delivery?</h2>
+      <p class="text-xs sm:text-sm text-[#3E2723]/80 leading-relaxed">
+        Our Los Angeles distribution terminal specializes in high-purity dried botanical species and whole-fungi strains. Every option listed undergoes strict humidity control and vacuum-barrier packaging to ensure absolute potency stability during priority transit across the United States and Canada. Guaranteed discreet delivery with full tracking visibility.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { addToCart } from '../../store/cartStore.ts';
+
+  document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLElement;
+      const card = btn.closest('article');
+      if (!card) return;
+
+      const id = btn.dataset.productId!;
+      const name = btn.dataset.productName!;
+      const image = btn.dataset.productImage!;
+
+      const selectEl = card.querySelector('select') as HTMLSelectElement;
+      let variantName = selectEl ? selectEl.options[selectEl.selectedIndex].text.split(' - ')[0] : 'Standard';
+      let price = selectEl ? parseFloat(selectEl.value) : 0;
+
+      if (isNaN(price)) {
+        const priceEl = card.querySelector('.product-price');
+        price = priceEl ? parseFloat(priceEl.textContent?.replace('$', '').replace(' USD', '') || '0') : 0;
+      }
+
+      addToCart({
+        id,
+        name,
+        price,
+        image,
+        variant: variantName
+      });
+
+      if ((window as any).openMycoVerseCart) {
+        (window as any).openMycoVerseCart();
+      }
+    });
+  });
+</script>

@@ -1,0 +1,77 @@
+---
+interface Props {
+  stats: {
+    labTestRate: number;
+    labTestSuffix: string;
+    dispatchSpeedText: string;
+    freeShippingThreshold: number;
+    freeShippingPrefix: string;
+    freeShippingSuffix: string;
+    reach: number;
+    reachSuffix: string;
+  };
+}
+const { stats } = Astro.props;
+---
+<section class="bg-[#1A120B] text-[#FDFBF7] py-12 my-10 border-y border-[#3E2723]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center" id="counter-section">
+    <div>
+      <p class="text-3xl sm:text-4xl font-extrabold text-[#D4A373]">
+        <span class="counter" data-target={stats.labTestRate}>0</span>{stats.labTestSuffix}
+      </p>
+      <p class="text-xs uppercase tracking-wider text-stone-400 mt-1">Lab Tested & Verified</p>
+    </div>
+    <div>
+      <p class="text-3xl sm:text-4xl font-extrabold text-[#D4A373]">{stats.dispatchSpeedText}</p>
+      <p class="text-xs uppercase tracking-wider text-stone-400 mt-1">Secure Order Dispatch</p>
+    </div>
+    <div>
+      <p class="text-3xl sm:text-4xl font-extrabold text-[#D4A373]">
+        {stats.freeShippingPrefix}<span class="counter" data-target={stats.freeShippingThreshold}>0</span>{stats.freeShippingSuffix}
+      </p>
+      <p class="text-xs uppercase tracking-wider text-stone-400 mt-1">Free Express Shipping</p>
+    </div>
+    <div>
+      <p class="text-3xl sm:text-4xl font-extrabold text-[#D4A373]">
+        <span class="counter" data-target={stats.reach}>0</span>{stats.reachSuffix}
+      </p>
+      <p class="text-xs uppercase tracking-wider text-stone-400 mt-1">Direct Home Delivery</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const counters = document.querySelectorAll(".counter");
+    const speed = 150;
+
+    const startCounters = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          counters.forEach(counter => {
+            const targetAttr = counter.getAttribute("data-target");
+            const target = targetAttr ? parseInt(targetAttr, 10) : 0;
+            let count = 0;
+
+            const updateCount = () => {
+              const inc = target / speed;
+              if (count < target) {
+                count = Math.ceil(count + inc);
+                counter.textContent = (count > target ? target : count).toString();
+                setTimeout(updateCount, 15);
+              } else {
+                counter.textContent = target.toString();
+              }
+            };
+            updateCount();
+          });
+          observer.disconnect();
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(startCounters, { threshold: 0.2 });
+    const section = document.getElementById("counter-section");
+    if (section) observer.observe(section);
+  });
+</script>
